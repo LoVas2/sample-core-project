@@ -13,6 +13,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <spring.version>5.3.14</spring.version>
         <log4j.version>2.17.0</log4j.version>
+        <javax.ws.version>2.1.1</javax.ws.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
@@ -23,12 +24,13 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!-- SFTP -->
+        <!-- Http -->
         <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.55</version>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax.ws.version}</version>
         </dependency>
+        <!-- SFTP -->
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
@@ -63,6 +65,12 @@
             <groupId>org.mockftpserver</groupId>
             <artifactId>MockFtpServer</artifactId>
             <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>2.22.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
