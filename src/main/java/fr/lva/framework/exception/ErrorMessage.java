@@ -2,7 +2,8 @@ package fr.lva.framework.exception;
 
 public enum ErrorMessage implements IErrorMessage {
 
-    ERROR_SAMPLE("FWK_001");
+    ERROR_SAMPLE("FWK_001"),
+    AUDIT("FWK_002");
 
     // ------------------------------------------------------------------------
     // Constants
