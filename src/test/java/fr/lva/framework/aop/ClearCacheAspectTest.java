@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,6 +47,21 @@ public class ClearCacheAspectTest {
         Mockito.when(clearCacheAnnotation.value()).thenReturn("#{args[0].id}");
 
         Assert.assertEquals("Wrong id extracted from SpEL", "1", aspect.clearCache(jp, clearCacheAnnotation));
+    }
+
+    @Test
+    public void springElListTest() {
+        ClearCacheAspect aspect = new ClearCacheAspect();
+
+        User u1 = new User(1L, "name", "password");
+        User u2 = new User(2L, "name", "password");
+        JoinPoint jp = Mockito.mock(JoinPoint.class);
+        Mockito.when(jp.getArgs()).thenReturn(Collections.singletonList(Arrays.asList(u1, u2).toArray()).toArray());
+
+        ClearCache clearCacheAnnotation = Mockito.mock(ClearCache.class);
+        Mockito.when(clearCacheAnnotation.value()).thenReturn("#{args[0].![id]}");
+
+        Assert.assertEquals("Wrong ids extracted from SpEL", "1,2", aspect.clearCache(jp, clearCacheAnnotation));
     }
 
 }
