@@ -1,64 +1,47 @@
 package fr.lva.framework.java.java8;
 
-import java.time.Month;
-import java.time.format.TextStyle;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.*;
+/**
+ * A FunctionalInterface can have only 1 abstract method. But can implement many default methods.
+ * Adding too many default methods to the interface is not a very good architectural decision.
+ * This should be considered a compromise, only to be used when required for upgrading existing interfaces without breaking backward compatibility.
+ *
+ * Functional interfaces can be extended by other functional interfaces if their abstract methods have the same signature
+ */
+@java.lang.FunctionalInterface
+public interface FunctionalInterface {
 
-public class FunctionalInterface {
+    String method(String str);
 
-    /**
-     * Use function if it takes something and returns something else
-     *
-     * @param o object applying function
-     * @param function to apply
-     * @return the result of the function
-     */
-    public static String applyFunction(Object o, Function<String, String> function) {
-        return function.apply((String) o);
+    default String methodDefault(String str) {
+        return "";
     }
 
     /**
-     * Use Supplier if it takes nothing, but returns something.
-     *
-     * @param supplier : function to call
+     * Class to show how to use functional interface and how scope is affected by lambda expression.
      */
-    public static String applySupplier(Supplier<String> supplier) {
-        return supplier.get();
-    }
+    class FunctionalInterfaceUsage {
 
-    /**
-     * Use Consumer if it takes something, but returns nothing.
-     *
-     * @param d object to consume
-     * @param consumer the consumer function
-     */
-    public static void applyConsumer(double d, DoubleConsumer consumer) {
-        consumer.accept(d);
-    }
+        private String value = "Value from class";
 
-    /**
-     * Use predicate if it takes something and return boolean
-     * @return Month predicates filtering "er" month
-     */
-    public static Predicate<Month> erMonth() {
-        return m -> m.getDisplayName(TextStyle.FULL, Locale.US).endsWith("er");
-    }
-
-    /**
-     * Filter objects by unique attribute
-     *
-     * @param keyExtractor function getting attribute
-     * @param <T> object type to filter
-     * @return predicate for filtering
-     */
-    public static <T> Predicate<T> filterByAttribute(Function<? super T, ?> keyExtractor) {
-        Map<Object, Boolean> seen = new ConcurrentHashMap();
-        return (t) -> {
-            return seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+        // Use FunctionalInterface with lambda expression
+        // We can’t hide variables from the enclosing scope inside the lambda’s body.
+        FunctionalInterface fi = s -> {
+            String value = "Value from lambda";
+            return this.value + " let's do it";
         };
-    }
 
+        // Over an inner class
+        // When we use an inner class, it creates a new scope. We can hide local variables from the enclosing scope by instantiating new local variables with the same names.
+        FunctionalInterface fiIC = new FunctionalInterface() {
+            String value = "Value from inner class";
+            @Override
+            public String method(String str) {
+               return this.value + " don't do it";
+            }
+        };
+
+        String result = "Results: resultIC = " + fi.method("") +
+                        ", resultLambda = " + fiIC.method("");
+        // result = "Results: resultIC = Value from inner class, resultLambda = Value from class"
+    }
 }
